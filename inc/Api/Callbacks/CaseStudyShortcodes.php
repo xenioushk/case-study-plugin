@@ -44,7 +44,7 @@ class CaseStudyShortcodes extends BaseController
       'post_type'         => $post_type,
       'orderby'             => $orderby,
       'order'                => $order,
-      'posts_per_page' => 2, // change later.
+      'posts_per_page' => 4, // change later.
       'paged' => $paged
     );
 

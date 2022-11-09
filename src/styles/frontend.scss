@@ -5,9 +5,12 @@
 }
 
 .case_study_dropdown {
-  width: 200px;
+  width: 220px;
   float: left;
   margin: 0 6px;
+  padding: 12px;
+  border: 1px solid gainsboro;
+  background: white;
 }
 
 .no_results_found {
@@ -36,8 +39,9 @@
 
 .case_study_item h3 {
   color: #283593;
-  font-size: 1.5rem;
-  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: bold;
   margin: 0;
 }
 
@@ -55,17 +59,23 @@
 
 #cs_pagination {
   clear: both;
+  width: 400px;
+  margin: 32px auto 0 auto;
 
   a.page-numbers {
     display: inline-block;
     padding: 0px 16px;
     text-decoration: none;
+    border: 1px solid gainsboro;
+    background: white;
   }
 
   span.page-numbers.current {
-    background: lightblue;
+    color: white;
     font-weight: bold;
     display: inline-block;
     padding: 0px 16px;
+    background: #7851b2;
+    border: 1px solid #7851b2;
   }
 }

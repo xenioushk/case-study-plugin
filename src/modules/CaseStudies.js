@@ -22,6 +22,7 @@ class CaseStudies {
 
     // Bind Click Events.
     $(document).on("click", "a.page-numbers", function (e) {
+      window.scrollTo({ top: 0, behavior: "smooth" })
       var currentPageUrl = $(this).attr("href")
       var pageNo = currentPageUrl.split("/")
       var nextPageNo = pageNo[pageNo.length - 2]
@@ -42,6 +43,7 @@ class CaseStudies {
         $("#cs_pagination").remove()
       }
       $("#case_studies").html("Loading....")
+
       axios.post(pmapiAdditionalData.pmapi_app_root + "/wp-admin/admin-ajax.php", params).then((res) => {
         $("#case_studies").html("").html(res.data.data)
       })
@@ -55,7 +57,7 @@ class CaseStudies {
       let $cat = $("option:selected", this).attr("data-cat")
       let $tax = $("option:selected", this).attr("data-tax")
       window.history.pushState("", "", "/case-studies")
-      let $mod_url = "/?cat=" + $cat + "&tax=" + $tax
+      let $mod_url = "?cat=" + $cat + "&tax=" + $tax
 
       if (typeof $cat == "undefined") {
         $mod_url = "/case-studies"
