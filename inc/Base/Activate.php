@@ -2,7 +2,7 @@
 
 
 /**
- * @package PMApiPlugin
+ * @package CaseStudyPlugin
  */
 
 namespace Inc\Base;
