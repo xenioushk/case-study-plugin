@@ -68,16 +68,17 @@ class CaseStudies {
   }
 
   ajaxRequest(params) {
+    params.append("ajax", "1")
     params.append("action", "load_more_posts")
     if (this.getUrlParameters("tax")) {
       params.append("tax", this.getUrlParameters("tax")) // will make it dynamic later.
       params.append("cat", this.getUrlParameters("cat")) // will make it dynamic later.
     }
     this.csPagination.length ? this.csPagination.remove() : ""
-    this.caseStudies.html("Loading....")
+    this.allCaseStudies.html("Loading....")
     window.scrollTo({ top: 0, behavior: "smooth" })
     axios.post(pmapiAdditionalData.pmapi_app_root + "/wp-admin/admin-ajax.php", params).then((res) => {
-      this.caseStudies.html("").html(res.data.data)
+      this.allCaseStudies.html("").html(res.data.data)
     })
   }
 }

@@ -79,13 +79,17 @@ class CaseStudyShortcodes extends BaseController
 
     $all_case_studies = "";
 
-    if ($loop->have_posts()) :
+    $case_base_url = get_the_permalink();
 
-      $case_base_url = get_the_permalink();
+    if ($ajax == 0) {
 
       $all_case_studies .= "<div id='all_case_studies' data-case_base_url='$case_base_url'>";
 
       $all_case_studies .= "<div id='case_studies' class='case_studies_inner'>";
+    }
+
+    if ($loop->have_posts()) :
+
       while ($loop->have_posts()) :
 
         $loop->the_post();
@@ -102,14 +106,9 @@ class CaseStudyShortcodes extends BaseController
                                         
                                         </div>";
 
-      // $all_case_studies .= "<p> </p>";
-      // $all_case_studies .= "<p>" . get_the_title() . " Paged: $paged Ajax: $ajax</p>";
-
       endwhile;
 
-      $all_case_studies .= "</div><!-- end case_studies -->";
 
-      // if ($ajax == 0) {
 
       $additional_filter = "";
 
@@ -128,14 +127,18 @@ class CaseStudyShortcodes extends BaseController
         'prev_text' => '&laquo;',
         'next_text' => '&raquo;',
         'prev_next'          => false,
-        'show_all' => true
+        'show_all' => false
       )) . '</div> <!-- end cs_pagination -->';
 
-      $all_case_studies .= "</div> <!-- end all_case_studies -->";
-    // }
     else :
-      $all_case_studies = "<p class='no_results_found'>No results found !</p>";
+      $all_case_studies .= "<p class='no_results_found'>No results found !</p>";
     endif;
+
+    if ($ajax == 0) {
+      $all_case_studies .= "</div><!-- end case_studies -->";
+      $all_case_studies .= "</div> <!-- end all_case_studies -->";
+    }
+
     wp_reset_postdata();
     return $all_case_studies;
   }
