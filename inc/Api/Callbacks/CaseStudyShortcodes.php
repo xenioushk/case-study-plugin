@@ -81,8 +81,9 @@ class CaseStudyShortcodes extends BaseController
 
     if ($loop->have_posts()) :
 
+      $case_base_url = get_the_permalink();
 
-      $all_case_studies .= "<div id='all_case_studies'>";
+      $all_case_studies .= "<div id='all_case_studies' data-case_base_url='$case_base_url'>";
 
       $all_case_studies .= "<div id='case_studies' class='case_studies_inner'>";
       while ($loop->have_posts()) :

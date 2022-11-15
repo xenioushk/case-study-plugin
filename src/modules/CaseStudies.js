@@ -7,81 +7,77 @@ class CaseStudies {
     // Stop executing program if there is no "all_case_studies" ID
     if ($("#all_case_studies").length == 0) return
 
-    this.cs_pagination = $("#cs_pagination")
-    this.cs_pagination_link = this.cs_pagination.find(".page-numbers")
-    this.case_study_dropdown = $(".case_study_dropdown")
+    this.allCaseStudies = $("#all_case_studies")
+    this.csPagination = $("#cs_pagination")
+    this.csPaginationLink = $(".page-numbers")
+    this.caseStudyDropdown = $(".case_study_dropdown")
+    this.caseStudies = $("#case_studies")
 
-    //if we get value from url set it as true.
-    // $('select option[value="ecommerce"]').attr("selected", true)
+    this.events()
+  }
 
-    // Helper Functions.
+  // 2. EVENTS.
 
-    function getParam(param) {
-      return new URLSearchParams(window.location.search).get(param)
+  events() {
+    $(document).on("click", "a.page-numbers", this.loadCaseStudies.bind(this)) // this refers to the class (".page-numbers")
+    this.caseStudyDropdown.on("change", this.loadCaseStudiesDropdown.bind(this))
+  }
+
+  // 3. METHODS.
+
+  getUrlParameters(param) {
+    return new URLSearchParams(window.location.search).get(param)
+  }
+
+  loadCaseStudiesDropdown(e) {
+    let $cat = $(e.target[e.target.selectedIndex]).data("cat")
+    let $tax = $(e.target[e.target.selectedIndex]).data("tax")
+
+    let $case_base_url = this.allCaseStudies.data("case_base_url")
+
+    let $mod_url = $case_base_url + "?cat=" + $cat + "&tax=" + $tax
+
+    if (typeof $cat == "undefined") {
+      $mod_url = $case_base_url
     }
+    window.history.pushState("", "", $mod_url)
 
-    // Bind Click Events.
-    $(document).on("click", "a.page-numbers", function (e) {
-      window.scrollTo({ top: 0, behavior: "smooth" })
-      var currentPageUrl = $(this).attr("href")
-      var pageNo = currentPageUrl.split("/")
-      var nextPageNo = pageNo[pageNo.length - 2]
+    this.caseStudyDropdown.val("")
 
-      window.history.pushState("", "", currentPageUrl)
+    $(e.target).val($cat)
 
-      // call ajax in here.
+    let params = new URLSearchParams()
+    params.append("current_page", 1) // will make it dynamic later.
 
-      let params = new URLSearchParams()
-      params.append("action", "load_more_posts")
-      params.append("current_page", nextPageNo) // will make it dynamic later.
+    this.ajaxRequest(params)
+  }
 
-      if (getParam("tax")) {
-        params.append("tax", getParam("tax")) // will make it dynamic later.
-        params.append("cat", getParam("cat")) // will make it dynamic later.
-      }
-      if ($("#cs_pagination").length) {
-        $("#cs_pagination").remove()
-      }
-      $("#case_studies").html("Loading....")
+  loadCaseStudies(e) {
+    e.preventDefault()
+    let $this = $(e.target.closest("a.page-numbers"))
 
-      axios.post(pmapiAdditionalData.pmapi_app_root + "/wp-admin/admin-ajax.php", params).then((res) => {
-        $("#case_studies").html("").html(res.data.data)
-      })
+    let currentPageUrl = $this.attr("href")
+    let pageNo = currentPageUrl.split("/")
+    let nextPageNo = pageNo[pageNo.length - 2]
+    window.history.pushState("", "", currentPageUrl)
 
-      e.preventDefault()
-    })
+    let params = new URLSearchParams()
+    params.append("current_page", nextPageNo) // will make it dynamic later.
 
-    // Change Dropdown.
+    this.ajaxRequest(params)
+  }
 
-    this.case_study_dropdown.on("change", function () {
-      let $cat = $("option:selected", this).attr("data-cat")
-      let $tax = $("option:selected", this).attr("data-tax")
-      window.history.pushState("", "", "/case-studies")
-      let $mod_url = "?cat=" + $cat + "&tax=" + $tax
-
-      if (typeof $cat == "undefined") {
-        $mod_url = "/case-studies"
-      }
-      window.history.pushState("", "", $mod_url)
-
-      // call ajax in here.
-
-      let params = new URLSearchParams()
-      params.append("action", "load_more_posts")
-      params.append("current_page", 1) // will make it dynamic later.
-
-      if (getParam("tax")) {
-        params.append("tax", getParam("tax")) // will make it dynamic later.
-        params.append("cat", getParam("cat")) // will make it dynamic later.
-      }
-
-      if ($("#cs_pagination").length) {
-        $("#cs_pagination").remove()
-      }
-      $("#case_studies").html("Loading....")
-      axios.post(pmapiAdditionalData.pmapi_app_root + "/wp-admin/admin-ajax.php", params).then((res) => {
-        $("#case_studies").html("").html(res.data.data)
-      })
+  ajaxRequest(params) {
+    params.append("action", "load_more_posts")
+    if (this.getUrlParameters("tax")) {
+      params.append("tax", this.getUrlParameters("tax")) // will make it dynamic later.
+      params.append("cat", this.getUrlParameters("cat")) // will make it dynamic later.
+    }
+    this.csPagination.length ? this.csPagination.remove() : ""
+    this.caseStudies.html("Loading....")
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    axios.post(pmapiAdditionalData.pmapi_app_root + "/wp-admin/admin-ajax.php", params).then((res) => {
+      this.caseStudies.html("").html(res.data.data)
     })
   }
 }
