@@ -10,6 +10,7 @@
     }
   },
   "require-dev": {
+    "joshtronic/php-loremipsum": "*",
     "phpunit/phpunit": "^9.5",
     "yoast/phpunit-polyfills": "*"
   },

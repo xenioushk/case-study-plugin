@@ -8,6 +8,7 @@
 namespace Inc\Api;
 
 use \Inc\Base\BaseController;
+use joshtronic\LoremIpsum;
 
 // CptApi's interface class.
 
@@ -17,6 +18,7 @@ class CptApi extends BaseController
 
   public $cpt_settings = [];
   public $tax_settings = [];
+  public $sample_settings = [];
 
   public function register()
   {
@@ -76,6 +78,16 @@ class CptApi extends BaseController
     return $this;
   }
 
+  public function WithSamplePost(array $sample_settings = [])
+  {
+
+    if (empty($sample_settings) || $sample_settings['create'] != true || empty($sample_settings['post_type']) || $sample_settings['post_count'] <= 0)
+      return $this;
+
+    $this->sample_settings = $sample_settings;
+
+    return $this;
+  }
 
   public function addCustomCptApi()
   {
@@ -134,6 +146,62 @@ class CptApi extends BaseController
     if (!empty($this->tax_settings)) {
       foreach ($this->tax_settings as $tax) {
         register_taxonomy($tax[0], $tax[1], $tax[2]);
+      }
+    }
+
+    /* 
+    *  Add/Create sample posts;
+    */
+
+
+    if (!empty($this->sample_settings)) {
+
+      $runtime = "bwl_sample";
+      if (get_option('bwl_sample_posts_gen') != $runtime) {
+        $updated = update_option('bwl_sample_posts_gen', $runtime);
+        if ($updated === true) {
+          $this->createSamplePost();
+        }
+      } else {
+        delete_option('bwl_sample_posts_gen');
+      }
+    }
+  }
+
+  private function createSamplePost()
+  {
+
+    $sample_settings = $this->sample_settings;
+    $lipsum = new LoremIpsum();
+    // echo "<pre>";
+    // print_r($post);
+    // echo "</pre>";
+
+    $post_count = $sample_settings['post_count'];
+    $title_length = $sample_settings['title_length'] ?: rand(2, 7);
+    $description_length = $sample_settings['description_length'] ?: 2;
+    $post_type = $sample_settings['post_type'];
+    $post_status = $sample_settings['status'] ?: 'publish';
+    $taxonomy_status = $sample_settings['taxonomy_status'] ?: false;
+
+    for ($count = 0; $count < $post_count; $count++) {
+
+      $post_data = [
+        'post_title' => $lipsum->words($title_length),
+        'post_content' =>  $lipsum->paragraphs($description_length),
+        'post_type' =>  $post_type,
+        'post_status' => $post_status
+      ];
+      $new_post_id = wp_insert_post($post_data);
+      // Assign post to a particular category. 
+
+      if (!is_wp_error($new_post_id) && $taxonomy_status == true) {
+
+        // set category.
+
+        // $job_cat_taxonomy = "category";
+        // $job_category = get_term_by('id', $data->get_param('taskCategory'), $job_cat_taxonomy);
+        // wp_set_object_terms($new_post_id, $job_category->slug, $job_cat_taxonomy, true);
       }
     }
   }

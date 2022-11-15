@@ -13,6 +13,10 @@ class ComposerStaticInitd44e2a5834e40cf544bc14300df81fe3
     );
 
     public static $prefixLengthsPsr4 = array (
+        'j' => 
+        array (
+            'joshtronic\\' => 11,
+        ),
         'P' => 
         array (
             'PluginTests\\' => 12,
@@ -30,6 +34,10 @@ class ComposerStaticInitd44e2a5834e40cf544bc14300df81fe3
     );
 
     public static $prefixDirsPsr4 = array (
+        'joshtronic\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/joshtronic/php-loremipsum/src',
+        ),
         'PluginTests\\' => 
         array (
             0 => __DIR__ . '/../..' . '/tests',

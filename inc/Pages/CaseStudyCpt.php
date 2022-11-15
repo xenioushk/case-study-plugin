@@ -16,8 +16,8 @@ class CaseStudyCpt extends BaseController
 
   public $case_study_cpt;
   public $cpt_settings = array();
-
   public $callbacks;
+  public $postType = "case_study";
 
   public function register()
   {
@@ -28,7 +28,7 @@ class CaseStudyCpt extends BaseController
     $this->case_study_cpt = new CptApi();
     $this->cpt_settings = [
       [
-        'post_type' => 'case_study', // keep it unique
+        'post_type' => $this->postType, // keep it unique
         'menu_name' => 'Case Study',
         'singular_name' => 'Case Study',
         'menu_icon' => 'dashicons-admin-plugins',
@@ -51,6 +51,14 @@ class CaseStudyCpt extends BaseController
       ]
     ];
 
-    $this->case_study_cpt->addCpt($this->cpt_settings)->WithTaxonomy($this->tax_settings)->register();
+    $this->sample_settings = [
+      'create' => false,
+      'post_count' => 3,
+      'description_length' => 2,
+      'post_type' => $this->postType,
+      'taxonomy_status' => false
+    ];
+
+    $this->case_study_cpt->addCpt($this->cpt_settings)->WithTaxonomy($this->tax_settings)->WithSamplePost($this->sample_settings)->register();
   }
 }
