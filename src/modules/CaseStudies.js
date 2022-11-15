@@ -75,10 +75,10 @@ class CaseStudies {
       params.append("cat", this.getUrlParameters("cat")) // will make it dynamic later.
     }
     this.csPagination.length ? this.csPagination.remove() : ""
-    this.allCaseStudies.html("Loading....")
+    this.caseStudies.html("Loading....")
     window.scrollTo({ top: 0, behavior: "smooth" })
     axios.post(pmapiAdditionalData.pmapi_app_root + "/wp-admin/admin-ajax.php", params).then((res) => {
-      this.allCaseStudies.html("").html(res.data.data)
+      this.caseStudies.html("").html(res.data.data)
     })
   }
 }
