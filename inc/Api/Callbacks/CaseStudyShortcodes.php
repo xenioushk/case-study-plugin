@@ -126,7 +126,7 @@ class CaseStudyShortcodes extends BaseController
         'total' => $loop->max_num_pages,
         'prev_text' => '&laquo;',
         'next_text' => '&raquo;',
-        'prev_next'          => false,
+        'prev_next'          => true,
         'show_all' => false
       )) . '</div> <!-- end cs_pagination -->';
 

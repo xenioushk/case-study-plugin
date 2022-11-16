@@ -14,11 +14,26 @@ class CaseStudies {
     this.caseStudies = $("#case_studies")
 
     this.events()
+    this.popstate()
+  }
+
+  popstate() {
+    var $this = this
+    window.onpopstate = (e) => {
+      let currentPageUrl = document.location.href
+      let pageNo = currentPageUrl.split("/")
+      let nextPageNo = pageNo[pageNo.length - 2]
+
+      nextPageNo = !isNaN(nextPageNo) ? nextPageNo : ""
+
+      $this.ajaxRequest(nextPageNo)
+    }
   }
 
   // 2. EVENTS.
 
   events() {
+    this.caseStudyDropdown.val("")
     $(document).on("click", "a.page-numbers", this.loadCaseStudies.bind(this)) // this refers to the class (".page-numbers")
     this.caseStudyDropdown.on("change", this.loadCaseStudiesDropdown.bind(this))
   }
@@ -46,10 +61,7 @@ class CaseStudies {
 
     $(e.target).val($cat)
 
-    let params = new URLSearchParams()
-    params.append("current_page", 1) // will make it dynamic later.
-
-    this.ajaxRequest(params)
+    this.ajaxRequest()
   }
 
   loadCaseStudies(e) {
@@ -61,13 +73,17 @@ class CaseStudies {
     let nextPageNo = pageNo[pageNo.length - 2]
     window.history.pushState("", "", currentPageUrl)
 
-    let params = new URLSearchParams()
-    params.append("current_page", nextPageNo) // will make it dynamic later.
-
-    this.ajaxRequest(params)
+    this.ajaxRequest(nextPageNo)
   }
 
-  ajaxRequest(params) {
+  ajaxRequest(nextPageNo) {
+    if (typeof nextPageNo == "undefined") {
+      nextPageNo = 1
+    }
+
+    let params = new URLSearchParams()
+    params.append("current_page", nextPageNo)
+
     params.append("ajax", "1")
     params.append("action", "load_more_posts")
     if (this.getUrlParameters("tax")) {
